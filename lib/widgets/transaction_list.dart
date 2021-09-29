@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
-  
   final List<Transaction> transactions;
 
   TransactionList({
@@ -11,10 +10,11 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(transactions);
     return Container(
-      child: Column(
-        children: transactions.map((tx) {
+      height: 300,
+      child: ListView.builder(
+        itemCount: transactions.length,
+        itemBuilder: (ctx, index) {
           return Card(
             child: Row(
               children: [
@@ -26,17 +26,17 @@ class TransactionList extends StatelessWidget {
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.purple,
+                      color: Theme.of(context).primaryColor,
                       width: 2,
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
                   child: Text(
-                    '${tx.getCurrency()}',
+                    '${transactions[index].getCurrency()}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
-                      color: Colors.purple,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),
@@ -44,15 +44,11 @@ class TransactionList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      tx.title,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      transactions[index].title,
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                     Text(
-                      tx.getFormatedDate(),
+                      transactions[index].getFormatedDate(),
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.black45,
@@ -65,7 +61,7 @@ class TransactionList extends StatelessWidget {
             ),
             elevation: 1,
           );
-        }).toList(),
+        },
       ),
     );
   }
