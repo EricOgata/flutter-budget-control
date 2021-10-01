@@ -4,6 +4,7 @@ import './models/transaction.dart';
 
 import './widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
+import './widgets/chart.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,12 +18,15 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.amber,
           fontFamily: 'Quicksand',
           textTheme: ThemeData.light().textTheme.copyWith(
-            headline6: TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+                headline6: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+                button: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
           appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
                   headline6: TextStyle(
@@ -50,14 +54,26 @@ class _MyHomePageState extends State<MyHomePage> {
       amount: 69.99,
       date: DateTime.now(),
     ),
+    Transaction(
+      id: 't1',
+      title: 'yesterday',
+      amount: 69.99,
+      date: DateTime.now().subtract(Duration(days: 1)),
+    )
   ];
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((element) {
+      return element.date.isAfter(DateTime.now().subtract(Duration(days: 7),));
+    }).toList();
+  }
+
+  void _addNewTransaction(String txTitle, double txAmount, DateTime txDate) {
     final newTransaction = new Transaction(
       title: txTitle,
       amount: txAmount,
       id: DateTime.now().toString(),
-      date: DateTime.now(),
+      date: txDate,
     );
     setState(() {
       _userTransactions.add(newTransaction);
@@ -98,19 +114,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                child: Text('CHART'),
-                elevation: 5,
-              ),
-            ),
+            Chart(_recentTransactions),
             Column(
               children: [
                 // NewTransaction(_addNewTransaction),
-                TransactionList(
-                  transactions: _userTransactions,
-                ),
+                TransactionList(transactions: _userTransactions),
               ],
             ),
           ],
